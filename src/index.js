@@ -7,49 +7,72 @@
 // @todo: Функция удаления карточки
 
 // @todo: Вывести карточки на страницу
-import '../src/pages/index.css';
-import {openModal, addingEventsListeners, closeModal, addModal} from '../src/components/modal.js';
-import {initialCards, addCardForm, createCard, placeNameInput, linkInput, cardList} from '../src/components/cards.js';
+import './pages/index.css';
+import { openModal, closeModal, profileEditModal, addCardModal, imageModal } from '../src/components/modal.js';
+import { initialCards, createCard, handleDeleteCard, cardsContainer } from '../src/components/cards.js';
 
-const allPopups = document.querySelectorAll('.popup');
-allPopups.forEach((popup) => {
-    addingEventsListeners(popup);
-    popup.classList.add('popup_is-animated');
-});
+const profileEditButton = document.querySelector('.profile__edit-button');
+const addCardButton = document.querySelector('.profile__add-button');
+const profileForm = document.querySelector('.popup_type_edit .popup__form');
+const addCardForm = document.querySelector('.popup_type_new-card .popup__form');
+const profileName = document.querySelector('.profile__title');
+const profileDescription = document.querySelector('.profile__description');
+const nameInput = profileForm.querySelector('.popup__input_type_name');
+const jobInput = profileForm.querySelector('.popup__input_type_description');
+const cardNameInput = addCardForm.querySelector('.popup__input_type_card-name');
+const cardLinkInput = addCardForm.querySelector('.popup__input_type_url');
+const popupImage = imageModal.querySelector('.popup__image');
+const popupCaption = imageModal.querySelector('.popup__caption');
 
-function handleOpenImage(name, link) {
-    const imageModal = document.querySelector('.popup_type_image');
-    const popupImage = imageModal.querySelector('.popup__image');
-    const popupCaption = imageModal.querySelector('.popup__caption');
-    
+function fillProfileForm() {
+    nameInput.value = profileName.textContent;
+    jobInput.value = profileDescription.textContent;
+};
+
+function handleProfileFormSubmit(evt) {
+    evt.preventDefault();
+    profileName.textContent = nameInput.value;
+    profileDescription.textContent = jobInput.value;
+    closeModal(profileEditModal);
+};
+
+function handleAddCardFormSubmit(evt) {
+    evt.preventDefault();
+    const newCard = {
+        name: cardNameInput.value,
+        link: cardLinkInput.value
+    };
+    const cardElement = createCard(newCard, handleDeleteCard, openImagePopup);
+    cardsContainer.prepend(cardElement);
+    addCardForm.reset();
+    closeModal(addCardModal);
+};
+
+function openImagePopup(name, link) {
     popupImage.src = link;
     popupImage.alt = name;
     popupCaption.textContent = name;
-
     openModal(imageModal);
-    addingEventsListeners(imageModal);
 };
 
-function handleAddCardSubmit(evt){
-  evt.preventDefault();
-  const newCardData = {
-    name: placeNameInput.value,
-    link: linkInput.value
-  };
-
-  const newCard = createCard(newCardData, handleDelete, handleOpenImage);
-  cardList.prepend(newCard);
-  closeModal(addModal);
-  addCardForm.reset();
-};
-
-addCardForm.addEventListener('submit', handleAddCardSubmit);
-
-initialCards.forEach(cardData => {
-    const initialCard = createCard(cardData, handleDelete, handleOpenImage);
-    cardList.appendChild(initialCard);
+document.querySelectorAll('.popup').forEach(popup => {
+    popup.addEventListener('mousedown', (evt) => {
+        if (evt.target === popup || evt.target.classList.contains('popup__close')) {
+            closeModal(popup);
+        }
+    });
 });
 
-function handleDelete (cardElement) {
-    cardElement.remove()
-};
+profileEditButton.addEventListener('click', () => {
+    fillProfileForm();
+    openModal(profileEditModal);
+});
+
+addCardButton.addEventListener('click', () => openModal(addCardModal));
+profileForm.addEventListener('submit', handleProfileFormSubmit);
+addCardForm.addEventListener('submit', handleAddCardFormSubmit);
+
+initialCards.forEach(card => {
+    const cardElement = createCard(card, handleDeleteCard, openImagePopup);
+    cardsContainer.append(cardElement);
+});

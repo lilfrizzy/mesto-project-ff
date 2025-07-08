@@ -8,8 +8,12 @@
 
 // @todo: Вывести карточки на страницу
 import './pages/index.css';
-import { openModal, closeModal, profileEditModal, addCardModal, imageModal } from '../src/components/modal.js';
-import { initialCards, createCard, handleDeleteCard, cardsContainer } from '../src/components/cards.js';
+import { openModal, closeModal } from '../src/components/modal.js';
+import { initialCards, createCard, handleDeleteCard } from '../src/components/cards.js';
+
+const profileEditModal = document.querySelector('.popup_type_edit');
+const addCardModal = document.querySelector('.popup_type_new-card');
+const imageModal = document.querySelector('.popup_type_image');
 
 const profileEditButton = document.querySelector('.profile__edit-button');
 const addCardButton = document.querySelector('.profile__add-button');
@@ -23,6 +27,7 @@ const cardNameInput = addCardForm.querySelector('.popup__input_type_card-name');
 const cardLinkInput = addCardForm.querySelector('.popup__input_type_url');
 const popupImage = imageModal.querySelector('.popup__image');
 const popupCaption = imageModal.querySelector('.popup__caption');
+const cardsContainer = document.querySelector('.places__list');
 
 function fillProfileForm() {
     nameInput.value = profileName.textContent;

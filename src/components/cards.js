@@ -50,5 +50,3 @@ export function createCard(cardData, handleDeleteCard, handleOpenImage) {
 export function handleDeleteCard(cardElement) {
     cardElement.remove();
 };
-
-export const cardsContainer = document.querySelector('.places__list');

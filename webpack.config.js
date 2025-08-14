@@ -61,4 +61,4 @@ module.exports = {
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin()
   ]
-} 
+}

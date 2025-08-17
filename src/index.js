@@ -33,15 +33,18 @@ let userId = null;
 let cardToDelete = null;
 let cardIdToDelete = null;
 
-function renderLoading(buttonElement, isLoading, loadingText = 'Сохранение...', defaultText = 'Сохранить') {
-  buttonElement.textContent = isLoading ? loadingText : defaultText;
-}
+function renderLoading(buttonElement, isLoading, loadingText = 'Сохранение...') {
+  // Сохраняем оригинальный текст, если он ещё не сохранён
+  if (!buttonElement.dataset.originalText) {
+    buttonElement.dataset.originalText = buttonElement.textContent;
+  }
 
-function handleDeleteClick(cardElement, cardId) {
-  cardToDelete = cardElement;
-  cardIdToDelete = cardId;
-  openModal(deletePopup);
-}
+  if (isLoading) {
+    buttonElement.textContent = loadingText;
+  } else {
+    buttonElement.textContent = buttonElement.dataset.originalText;
+  }
+};
 
 avatarForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
@@ -56,7 +59,10 @@ avatarForm.addEventListener('submit', (evt) => {
       closeModal(avatarModal);
       avatarForm.reset();
     })
-    .catch(console.error);
+    .catch(console.error)
+    .finally(() => {
+      renderLoading(submitButton, false);
+    });
 });
 
 confirmDeleteForm.addEventListener('submit', (evt) => {
@@ -69,11 +75,14 @@ confirmDeleteForm.addEventListener('submit', (evt) => {
   deleteCard(cardIdToDelete)
     .then(() => {
       cardToDelete.remove();
-      closeModal(deletePopup);
+      closeModal(confirmDeleteModal);
       cardToDelete = null;
       cardIdToDelete = null;
     })
-    .catch((err) => console.log(err));
+    .catch((err) => console.log(err))
+    .finally(() => {
+      renderLoading(submitButton, false);
+    });
 });
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -85,7 +94,7 @@ Promise.all([getUserInfo(), getInitialCards()])
     userId = userData._id;
     profileName.textContent = userData.name;
     profileDescription.textContent = userData.about;
-    document.querySelector('.profile__image').style.backgroundImage = `url(${userData.avatar})`;
+    profileImage.style.backgroundImage = `url(${userData.avatar})`;
 
     cards.forEach((card) => {
       const cardElement = createCard(card, handleDeleteCard, openImagePopup, userId);
@@ -99,16 +108,6 @@ function handleDeleteCard(cardId, cardElement) {
   cardToDelete = cardElement;
   openModal(confirmDeleteModal);
 }
-
-confirmDeleteForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  deleteCard(cardIdToDelete)
-    .then(() => {
-      cardToDelete.remove();
-      closeModal(confirmDeleteModal);
-    })
-    .catch(console.error);
-});
 
 function fillProfileForm() {
   nameInput.value = profileName.textContent;
@@ -148,7 +147,10 @@ function handleAddCardFormSubmit(evt) {
       addCardForm.reset();
       closeModal(addCardModal);
     })
-    .catch(console.error);
+    .catch(console.error)
+    .finally(() => {
+      renderLoading(submitButton, false);
+    });
 }
 
 function openImagePopup(name, link) {

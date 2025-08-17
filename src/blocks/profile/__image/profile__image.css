@@ -7,15 +7,42 @@
   background-size: cover;
   background-position: center;
   margin: 0 29px 0 0;
+  cursor: pointer;
+}
+
+.profile__avatar-edit-icon {
+  width: 120px;
+  height: 120px;
+  background: url('/src/images/edit-icon.svg') center no-repeat;
+  background-size: 26px 26px;
+  border: none;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  align-self: center;
+  cursor: pointer;
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  -ms-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+}
+
+.profile__image:hover .profile__avatar-edit-icon {
+  opacity: 0.6;
+  background-color: #000 ;
 }
 
 .profilr__image::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.5) url('/src/images/edit-icon.svg') center no-repeat;
+  background: url('/src/images/edit-icon.svg') center no-repeat;
   background-size: 26px 26px;
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.3s;
 }
 

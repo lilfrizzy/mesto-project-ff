@@ -7,6 +7,10 @@ const handleEscKey = (evt) => {
 
 export function openModal(modal) {
     modal.classList.add('popup_is-opened');
+    modal.classList.add('popup_is-animated');
+    setTimeout(() => {
+        modal.classList.add('popup_is-visible');
+    }, 1);
     document.addEventListener('keydown', handleEscKey);
 };
 

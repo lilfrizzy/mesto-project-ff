@@ -20,9 +20,6 @@ const setEventListeners = (formElement, config) => {
   const inputList = Array.from(formElement.querySelectorAll(config.inputSelector));
   
   inputList.forEach((inputElement) => {
-    if (inputElement.dataset.errorMessage) {
-      inputElement.setCustomValidity(inputElement.dataset.errorMessage);
-    };
     inputElement.addEventListener('input', () => {
       checkInputValidity(formElement, inputElement, config);
       toggleButtonState(formElement, config);
@@ -31,19 +28,19 @@ const setEventListeners = (formElement, config) => {
 };
 
 export const checkInputValidity = (formElement, inputElement, config) => {
-    if (inputElement.pattern && inputElement.validity.patternMismatch) {
+  if (inputElement.validity.patternMismatch) {
     inputElement.setCustomValidity(inputElement.dataset.errorMessage || 'Недопустимые символы');
-    } else if (inputElement.type === 'url' && !inputElement.validity.valid) {
+  } else if (inputElement.type === 'url' && !inputElement.validity.valid) {
     inputElement.setCustomValidity('Введите корректный URL (начинается с http:// или https://)');
-    } else {
+  } else {
     inputElement.setCustomValidity('');
-    }
+  }
 
-    if (!inputElement.validity.valid) {
+  if (!inputElement.validity.valid) {
     showInputError(formElement, inputElement, inputElement.validationMessage, config);
-    } else {
+  } else {
     hideInputError(formElement, inputElement, config);
-    }
+  }
 };
 
 const showInputError = (formElement, inputElement, errorMessage, config) => {
@@ -68,6 +65,16 @@ const hasInvalidInput = (inputList) => {
     }); 
 };
 
+const disableButton = (buttonElement, config) => {
+  buttonElement.disabled = true;
+  buttonElement.classList.add(config.inactiveButtonClass);
+};
+
+const enableButton = (buttonElement, config) => {
+  buttonElement.disabled = false;
+  buttonElement.classList.remove(config.inactiveButtonClass);
+};
+
 const toggleButtonState = (formElement, config) => {
     const inputList = Array.from(formElement.querySelectorAll(config.inputSelector));
     const buttonElement = formElement.querySelector(config.submitButtonSelector);
@@ -75,11 +82,9 @@ const toggleButtonState = (formElement, config) => {
     if (!buttonElement) return;
   
     if (hasInvalidInput(inputList)) {
-        buttonElement.disabled = true;
-        buttonElement.classList.add(config.inactiveButtonClass);
+        disableButton(buttonElement, config);
     } else {
-        buttonElement.disabled = false;
-        buttonElement.classList.remove(config.inactiveButtonClass);
+        enableButton(buttonElement, config)
     }
 };
 
@@ -93,8 +98,7 @@ export const clearValidation = (formElement, config) => {
 
   const buttonElement = formElement.querySelector(config.submitButtonSelector);
   if (buttonElement) {
-    buttonElement.disabled = true;
-    buttonElement.classList.add(config.inactiveButtonClass);
+    disableButton(buttonElement, config);
   }
   
   toggleButtonState(formElement, config);

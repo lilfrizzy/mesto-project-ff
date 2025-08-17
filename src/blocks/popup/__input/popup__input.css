@@ -21,12 +21,20 @@
   }
 }
 
-.form__input_type_error {
-  border-bottom-color: #FF0000;
+.form__input-error {
+  display: block;
+  min-height: 28px;
+  font-size: 12px;
+  font-weight: 400;
+  margin-block: 5px;
+  color: transparent;
 }
 
 .form__input-error_active {
   color: #FF0000;
-  font-size: 12px;
-  font-weight: 400;
+}
+
+.form__input_type_error {
+
+  border-bottom-color: #FF0000;
 }
